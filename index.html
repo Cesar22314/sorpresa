@@ -617,3 +617,28 @@ playBtn.addEventListener('click', async()=>{
   else{ try{ await audio.play(); playBtn.textContent='⏸️'; }catch{} }
   isPlaying = !isPlaying;
 });
+audio.addEventListener('timeupdate', ()=>{
+  const p=(audio.currentTime/audio.duration)*100;
+  bar.style.width=(isFinite(p)?p:0)+'%';
+  time.textContent = fmt(audio.currentTime)+' / '+fmt(audio.duration);
+});
+progress.addEventListener('click', (e)=>{
+  const r=progress.getBoundingClientRect();
+  const p=(e.clientX-r.left)/r.width;
+  if(isFinite(audio.duration)) audio.currentTime = p*audio.duration;
+});
+
+// 🚫 Bloquear gestos del navegador en móviles dentro del canvas
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('gesturechange', e => e.preventDefault());
+document.addEventListener('gestureend', e => e.preventDefault());
+document.addEventListener('touchmove', e => {
+  if (e.touches.length > 1) e.preventDefault(); // evita pinch zoom
+}, { passive: false });
+document.addEventListener('wheel', e => {
+  if (e.ctrlKey) e.preventDefault(); // evita zoom con ctrl + scroll
+}, { passive: false });
+
+</script>
+</body>
+</html>
